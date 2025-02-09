@@ -1,0 +1,9 @@
+CAPÍTULO 5
+
+Uma Cultura de
+Melhoria Contínua
+
+Em Japonês, a palavra kaizen literalmente significa "melhoria contínua". Uma cultura de trabalho onde todos os trabalhadores estão focados em continuamente melhorar a qualidade, a produtividade e a satisfação do cliente é conhecida como uma "cultura kaizen".
+Muito poucas empresas realmente conseguiram esta cultura.
+Empresas como a Toyota, onde a participação dos trabalhadores no seu programa de melhoria é próximo de 100%, e onde cada funcionário tem em média uma sugestão implementada todos os anos como parte de melhoria contínua, são muito raras.
+No mundo do desenvolvimento de software, o Software Engineering Institute (SEI) da Carnegie Mellon University definiu o nível mais alto do seu CMMI (Capability Maturity Model Integration) como Otimizando. Otimizando implica que a qualidade e o desempenho da organização estão sendo continuamente refinados. Embora não explicitamente declarado, visto que o CMMI fala pouco sobre cultura, é mais provável que um comportamento de otimização contínua aconteça dentro de uma organização com uma cultura kaizen.
