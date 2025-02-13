@@ -8,6 +8,11 @@ import gtts
 from playsound import playsound
 from pydub import AudioSegment
 import google.generativeai as genai
+from dotenv import load_dotenv
+from langdetect import detect
+from deep_translator import GoogleTranslator
+import speech_recognition as sr
+import sounddevice
 '''from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
@@ -17,9 +22,15 @@ from openai import OpenAI
 from langchain.schema import Document
 from langchain_community.callbacks.openai_info import OpenAICallbackHandler'''
 
+# Carrega as variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Cria um reconhecedor de fala
+recognizer = sr.Recognizer()
+
 # Configurações da API do Gemini
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')  # Chave da API carregada do ambiente
-genai.configure(api_key="AIzaSyCix3QUmIhQQ-nY2NvuSf5-MxkDMqP_D14")
+genai.configure(api_key=GEMINI_API_KEY)
 
 #os.environ["OPENAI_API_KEY"] = "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"
 
@@ -108,11 +119,47 @@ def responder_pergunta(pergunta, texto):
 
 
 def fazer_perguntas():
+
+    conteudo = "".join(documentos)
+
     while True:
-        pergunta = input("Digite a pergunta: ")
-        conteudo = "".join(documentos)
-        texto = responder_pergunta(pergunta, conteudo)
-        print(texto.strip())
+        # Usa o microfone como fonte de áudio
+        with sr.Microphone() as source:
+            print("Você tem dúvidas?")
+            recognizer.adjust_for_ambient_noise(source)  # Ajusta para o ruído ambiente
+            audio = recognizer.listen(source)  # Escuta o que foi falado
+
+        try:
+            # Reconhece a fala usando o Google Web Speech API (configurado para português do Brasil)
+            pergunta = recognizer.recognize_google(audio, language="pt-BR")
+            resposta = responder_pergunta(pergunta, conteudo)
+            print(f"Pergunta: {pergunta}\nResposta: {resposta}\n")
+
+        except sr.UnknownValueError:
+            print("Não consegui entender o áudio.")
+
+        except sr.RequestError:
+            print("Não foi possível acessar o serviço de reconhecimento de fala.")
+
+
+
+def traduz(texto, idioma):
+    if idioma == "pt":
+        return texto
+
+    elif idioma == "en":
+        tradutor = GoogleTranslator(source='en', target='pt')
+        traducao = tradutor.translate(texto)
+        return traducao
+
+    elif idioma == "es":
+        tradutor = GoogleTranslator(source='es', target='pt')
+        traducao = tradutor.translate(texto)
+        return traducao
+
+    else:
+        print("Idioma não reconhecido")
+        return texto
 
 
 def main():
@@ -137,16 +184,19 @@ def main():
     with open('temp.jpg', 'rb') as f:
         imagem_bytes = f.read()
 
-    # Mensagem de espera
     #falar_mensagem_inicial()
 
     # Envia a imagem para a API do Gemini
     texto = extrai_texto_da_imagem(caminho_imagem)
-    #print(f"[{len(texto)}] {texto}")
+    print(f"[{len(texto)}] {texto}")
     os.remove("temp.jpg")
 
+    idioma = detect(texto)
+
+    texto = traduz(texto, idioma)
+
     # Fala o texto extraído
-    #falar_texto(texto)
+    # falar_texto(texto)
 
     # Perguntas sobre o texto
     fazer_perguntas()
