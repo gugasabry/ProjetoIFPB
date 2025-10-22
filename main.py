@@ -74,7 +74,7 @@ def extrai_texto_da_imagem(image_path):
             image_bytes = output.getvalue()
 
         # Carregue o modelo Gemini Vision (gemini-pro-vision)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
 
         # Construa o prompt (incluindo a imagem)
         prompt = texto_prompt
@@ -250,7 +250,7 @@ def main():
                 end_time = time.time()
                 elapsed_time = end_time - start_time
                 print(f'Tempo de processamento da produção do áudio: {elapsed_time:.2f} segundos')
-                fazer_perguntas_voz()
+                # fazer_perguntas_voz()
             else:
                 playsound("mensagem_internet.mp3")
 
